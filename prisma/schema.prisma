@@ -20,36 +20,55 @@ enum AuthProvider {
 }
 
 model User {
-  id           String       @id @default(uuid())
-  email        String       @unique
-  password     String?
-  firstName    String?
-  lastName     String?
-  avatar       String?
-  role         Role         @default(USER)
-  provider     AuthProvider @default(LOCAL)
-  providerId   String?
-  isVerified   Boolean      @default(false)
-  // Thay vì lưu 1 token, lưu nhiều session để hỗ trợ đa thiết bị
-  sessions     Session[]
-  refreshToken String? // Hashed
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
-  deletedAt    DateTime?
+  id         String       @id @default(uuid())
+  email      String       @unique
+  password   String?
+  firstName  String?
+  lastName   String?
+  avatar     String?
+  role       Role         @default(USER)
+  provider   AuthProvider @default(LOCAL)
+  providerId String?
+  isVerified Boolean      @default(false)
 
+  sessions Session[]
+
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+  deletedAt           DateTime?
+  passwordResetTokens PasswordResetToken[]
+
+  @@unique([provider, providerId])
   @@index([email])
+  @@map("users")
 }
 
 model Session {
-  id    String @id @default(uuid())
-  token String @unique //Hash refresh token
-
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    String
-  userAgent String?
-  ipAddress String?
-  exprireAt DateTime
-  createAt  DateTime @default(now())
+  id           String   @id @default(uuid())
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId       String
+  refreshToken String // argon2id hashed - never stored plain
+  deviceName   String?
+  userAgent    String?
+  ipAddress    String?
+  lastActiveAt DateTime @default(now())
+  expriresAt   DateTime
+  createdAt    DateTime @default(now())
 
   @@index([userId])
+  @@index([expriresAt]) //for cleanup cron job
+  @@map("sessions")
+}
+
+model PasswordResetToken {
+  id        String    @id @default(uuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token     String    @unique //argon2id hashed
+  expiresAt DateTime
+  usedAt    DateTime? //null = not yet used; set on redemption
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
+  @@map("password_reset_tokens")
 }
