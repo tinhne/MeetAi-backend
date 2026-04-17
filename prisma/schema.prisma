@@ -1,0 +1,55 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+  MANAGER
+}
+
+enum AuthProvider {
+  LOCAL
+  GOOGLE
+  GITHUB
+}
+
+model User {
+  id           String       @id @default(uuid())
+  email        String       @unique
+  password     String?
+  firstName    String?
+  lastName     String?
+  avatar       String?
+  role         Role         @default(USER)
+  provider     AuthProvider @default(LOCAL)
+  providerId   String?
+  isVerified   Boolean      @default(false)
+  // Thay vì lưu 1 token, lưu nhiều session để hỗ trợ đa thiết bị
+  sessions     Session[]
+  refreshToken String? // Hashed
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  deletedAt    DateTime?
+
+  @@index([email])
+}
+
+model Session {
+  id    String @id @default(uuid())
+  token String @unique //Hash refresh token
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  userAgent String?
+  ipAddress String?
+  exprireAt DateTime
+  createAt  DateTime @default(now())
+
+  @@index([userId])
+}
