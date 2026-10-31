@@ -1,99 +1,186 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
-
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
-
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
-
-## Description
-
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Project setup
-
-```bash
-$ pnpm install
-```
-
-## Compile and run the project
-
-```bash
-# development
-$ pnpm run start
-
-# watch mode
-$ pnpm run start:dev
-
-# production mode
-$ pnpm run start:prod
-```
-
-## Run tests
-
-```bash
-# unit tests
-$ pnpm run test
-
-# e2e tests
-$ pnpm run test:e2e
-
-# test coverage
-$ pnpm run test:cov
-```
-
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ pnpm install -g @nestjs/mau
-$ mau deploy
-```
-
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
-
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
 # MeetAi-backend
+
+An early-stage **NestJS 11 + Prisma + PostgreSQL** backend starter. It sets up the basics a REST API needs (validated config, structured logging, request validation, consistent error responses) and exposes a single `User` resource.
+
+> **Status: prototype / boilerplate.**
+> Despite the repository name, this service is **not connected to the [Meet.AI](https://github.com/tinhne/meetai) app**. Meet.AI runs its own API inside Next.js (tRPC + Drizzle + Better Auth) and never calls this server.
+> The package is named `backend-jwt`. The Prisma schema already models users, sessions and password-reset tokens for a planned JWT auth flow, but no authentication endpoints exist yet.
+
+## Overview
+
+The project was scaffolded with the Nest CLI and is meant as a base for a JWT-authenticated API. So far it contains the infrastructure layer and one example feature module:
+
+- **Config:** `@nestjs/config` with a Joi schema that validates environment variables at startup.
+- **Logging:** Winston via `nest-winston`. Output is colorized in development and JSON otherwise.
+- **Validation:** a global `ValidationPipe` (whitelist, forbid unknown fields, implicit type conversion).
+- **Errors:** a global exception filter that returns a uniform JSON error and maps Prisma error codes to HTTP statuses.
+- **Data:** a global `PrismaService` connected to PostgreSQL. PostgreSQL itself runs locally with Docker Compose.
+- **Tooling:** ESLint (typescript-eslint, type-checked) + Prettier, Husky + lint-staged pre-commit hook, commitlint (Conventional Commits), Jest + Supertest.
+
+## Key features
+
+- Global route prefix `api/v1` (`src/main.ts`).
+- CORS with credentials and an explicit list of methods and headers (`src/main.ts`).
+- Environment validation fails fast on startup (`src/config/env.validation.ts`).
+- `GlobalExceptionFilter` (`src/common/filters/http-exception.filter.ts`):
+  - Returns `{ statusCode, timestamp, path, method, message, error }`.
+  - Maps Prisma `P2002` to `409`, `P2025` to `404`, `P2003` to `400`, and validation errors to `400`.
+  - Logs 5xx responses as errors and 4xx responses as warnings.
+- `PrismaService` connects on module init and disconnects on destroy (`src/infrastructure/database/prisma.service.ts`).
+- `User` module with create and list endpoints (`src/modules/user`).
+
+## Tech stack
+
+| Layer | Technology |
+| --- | --- |
+| Runtime / language | Node.js, TypeScript 5.9 |
+| Framework | NestJS 11 (`@nestjs/core` 11.1, Express platform) |
+| Config | `@nestjs/config` 4, Joi 18 |
+| Database | PostgreSQL 15 (Docker), Prisma 5.22 |
+| Validation | class-validator, class-transformer |
+| Logging | Winston 3 + nest-winston |
+| Testing | Jest 30, ts-jest, Supertest |
+| Tooling | pnpm, ESLint 9, Prettier 3, Husky 9, lint-staged, commitlint |
+
+## Architecture
+
+```mermaid
+flowchart LR
+    Client --> Main["main.ts<br/>prefix api/v1, CORS"]
+    Main --> Pipe["Global ValidationPipe"]
+    Pipe --> Ctrl["UserController"]
+    Ctrl --> Svc["UserService"]
+    Svc --> Prisma["PrismaService (global)"]
+    Prisma --> PG[("PostgreSQL")]
+    Ctrl -. "exceptions" .-> Filter["GlobalExceptionFilter<br/>+ Winston"]
+```
+
+### Data model (`prisma/schema.prisma`)
+
+| Model (table) | Purpose |
+| --- | --- |
+| `User` (`users`) | email (unique), optional password, first/last name, avatar, `role` (`USER`, `ADMIN`, `MANAGER`), `provider` (`LOCAL`, `GOOGLE`, `GITHUB`) + `providerId`, `isVerified`, soft-delete `deletedAt` |
+| `Session` (`sessions`) | per-device refresh-token session (token meant to be stored hashed), user agent, IP, `lastActiveAt`, expiry |
+| `PasswordResetToken` (`password_reset_tokens`) | one-time reset token (meant to be stored hashed), expiry, `usedAt` |
+
+Only `User` is used by the code today. `Session` and `PasswordResetToken` are groundwork for the planned auth flow.
+
+## Project structure
+
+```text
+src/
+├── main.ts                         # bootstrap: prefix, logger, pipes, filter, CORS
+├── app.module.ts                   # ConfigModule + Prisma, Logger, User modules
+├── config/                         # configuration factory + Joi env schema
+├── common/
+│   ├── filters/                    # GlobalExceptionFilter
+│   └── pipes/                      # GlobalValidationPipe
+├── infrastructure/
+│   ├── database/                   # PrismaModule / PrismaService (global)
+│   └── logger/                     # Winston logger module (global)
+└── modules/user/                   # controller, service, DTO, entity
+prisma/                             # schema.prisma + migrations
+test/                               # e2e test (Supertest)
+test-boilerplate/                   # empty Bruno API collection
+docker-compose.yml                  # local PostgreSQL 15 on port 5435
+```
+
+## Getting started
+
+### Prerequisites
+
+- Node.js 20+ and [pnpm](https://pnpm.io)
+- Docker (for the local PostgreSQL container)
+
+### Install
+
+```bash
+git clone https://github.com/tinhne/MeetAi-backend.git
+cd MeetAi-backend
+pnpm install
+```
+
+### Start PostgreSQL
+
+```bash
+docker compose up -d
+```
+
+This starts PostgreSQL 15 on `localhost:5435` with database `nest_db`. The local user and password are defined in `docker-compose.yml`.
+
+### Configure the environment
+
+```bash
+cp .env.example .env
+```
+
+Fill in the values. `NODE_ENV` is required by the validation schema but missing from `.env.example`, so add it yourself:
+
+```env
+NODE_ENV=development
+PORT=3000
+DATABASE_URL=postgresql://<user>:<password>@localhost:5435/nest_db
+JWT_SECRET=your-secret-here
+```
+
+### Create the database schema
+
+The committed migrations are older than the current `schema.prisma`. They create `User` and `Session` tables with different columns. Generate a migration that matches the schema:
+
+```bash
+pnpm exec prisma migrate dev
+```
+
+### Run
+
+```bash
+pnpm run start:dev      # watch mode
+pnpm run start          # single run
+pnpm run build && pnpm run start:prod
+```
+
+The API is served at `http://localhost:3000/api/v1`.
+
+### Tests and code quality
+
+```bash
+pnpm run test           # unit tests (none exist yet)
+pnpm run test:e2e       # e2e tests for /user (needs the database running)
+pnpm run lint
+pnpm run format
+```
+
+## Environment variables
+
+| Name | Required | Description |
+| --- | --- | --- |
+| `NODE_ENV` | Yes | `development`, `production` or `test` (validated by Joi) |
+| `PORT` | No | HTTP port, defaults to `3000` |
+| `DATABASE_URL` | Yes | PostgreSQL connection string, used by Prisma |
+| `JWT_SECRET` | Yes | Required by validation and loaded into config, but not used yet |
+
+## API reference
+
+| Method | Path | Auth | Description |
+| --- | --- | --- | --- |
+| POST | `/api/v1/user` | None | Create a user. Body: `{ "name": string, "email": string }`. `name` is stored as `firstName` |
+| GET | `/api/v1/user` | None | List all users |
+
+## Known limitations
+
+- **Not the Meet.AI backend.** The repository name suggests it is, but there is no integration with the Meet.AI app.
+- No authentication yet: `JWT_SECRET` is unused, and both endpoints are public. `GET /user` returns every column, including `password`.
+- `src/main.ts` reads `nodeEnv` and `app.frontendUrl` from config, but `src/config/configuration.ts` defines neither. As a result:
+  - The app always behaves as development.
+  - CORS reflects any origin (with credentials).
+  - Logs always use the development format.
+- The committed migrations do not match `schema.prisma`, so run `prisma migrate dev` first (see above).
+- The startup log mentions Swagger docs at `/api/docs`, but Swagger is not installed.
+- There are no unit tests. The single e2e spec needs a live database.
+
+## Author
+
+**Lê Văn Trung Tính** — Software Engineer | AI Product Builder
+
+- Website: [trungtinh.site](https://trungtinh.site)
+- GitHub: [@tinhne](https://github.com/tinhne)
